@@ -78,7 +78,9 @@ namespace Tasks
 				"    [ ] 8: Interaction-Driven Design",
 				""
 			);
-
+			
+			Execute("deadline 1");
+			
 			Execute("quit");
 		}
 

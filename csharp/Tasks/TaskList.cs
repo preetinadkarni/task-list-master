@@ -52,6 +52,9 @@ namespace Tasks
 			case "uncheck":
 				Uncheck(commandRest[1]);
 				break;
+			case "deadline":
+				Deadline(commandRest[1]);
+				break;
 			case "help":
 				Help();
 				break;
@@ -124,6 +127,23 @@ namespace Tasks
 			identifiedTask.Done = done;
 		}
 
+		private void Deadline(string commandLine)
+		{
+			var subcommandRest = commandLine.Split(" ".ToCharArray(), 2);
+			console.Write(subcommandRest[0], subcommandRest[1]);
+			int id = int.Parse(subcommandRest[0]);
+			var identifiedTask = tasks
+				.Select(project => project.Value.FirstOrDefault(task => task.Id == id))
+				.Where(task => task != null)
+				.FirstOrDefault();
+			if (identifiedTask == null) {
+				console.WriteLine("Could not find a task with an ID of {0}.", id);
+				return;
+			}
+
+			identifiedTask.Deadline = DateTime.Parse(subcommandRest[1]);
+		}
+
 		private void Help()
 		{
 			console.WriteLine("Commands:");
@@ -132,6 +152,7 @@ namespace Tasks
 			console.WriteLine("  add task <project name> <task description>");
 			console.WriteLine("  check <task ID>");
 			console.WriteLine("  uncheck <task ID>");
+			console.WriteLine("  deadline <task ID> <date mm/dd/yyyy format>");
 			console.WriteLine();
 		}
 

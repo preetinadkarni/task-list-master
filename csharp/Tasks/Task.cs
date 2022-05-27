@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Tasks
 {
@@ -10,5 +11,7 @@ namespace Tasks
 		public string Description { get; set; }
 
 		public bool Done { get; set; }
+
+		public DateTime? Deadline { get; set; }
 	}
 }

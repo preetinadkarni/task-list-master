@@ -16,7 +16,7 @@ namespace Tasks
 		public void StartTheApplication()
 		{
 			this.console = new FakeConsole();
-			var taskList = new TaskList(console);
+			var taskList = new TaskListManager(console);
 			this.applicationThread = new System.Threading.Thread(() => taskList.Run());
 			applicationThread.Start();
 		}
@@ -33,7 +33,7 @@ namespace Tasks
 			throw new Exception("The application is still running.");
 		}
 
-		[Test, Timeout(1000)]
+		[Test, Timeout(500)]
 		public void ItWorks()
 		{
 			Execute("show");
@@ -79,8 +79,41 @@ namespace Tasks
 				""
 			);
 			
-			Execute("deadline 1");
+			Execute("deadline 2 " + DateTime.Today.ToString("MM-dd-yyyy"));
 			
+			Execute("show");
+			ReadLines(
+				"secrets",
+				"    [x] 1: Eat more donuts.",
+				"    [ ] 2: Destroy all humans. " + DateTime.Today.ToString("MM-dd-yyyy"),
+				"",
+				"training",
+				"    [x] 3: Four Elements of Simple Design",
+				"    [ ] 4: SOLID",
+				"    [x] 5: Coupling and Cohesion",
+				"    [x] 6: Primitive Obsession",
+				"    [ ] 7: Outside-In TDD",
+				"    [ ] 8: Interaction-Driven Design",
+				""
+			);
+			
+			Execute("today");
+			ReadLines( "    [ ] 2: Destroy all humans. " + DateTime.Today.ToString("MM-dd-yyyy") + " secrets"
+			);
+			
+			Execute("quit");
+		}
+
+		[Test, Timeout(500)]
+		public void GivenTaskIDDoesNotExistShowErrorOnConsole()
+		{
+			Execute("show");
+
+			Execute("add project secrets");
+			Execute("add task sec Eat more donuts.");
+			ReadLines("Could not find a project with the name \"sec\"."
+			);
+				
 			Execute("quit");
 		}
 

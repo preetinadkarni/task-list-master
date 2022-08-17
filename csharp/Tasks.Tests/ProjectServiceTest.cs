@@ -39,6 +39,20 @@ namespace Tasks
         }
         
         [Test, Timeout(500)]
+        public void GivenTaskWithTaskIdWhenAddTaskIsCalledThenShouldAddTaskToProjectList()
+        {
+            List<Project> projects = new List<Project>{};
+            projects.Add(_projectService.AddProject("secrets"));
+            projects.Add(_projectService.AddProject("project training"));
+            _projectService.AddTask(projects, "project training","training SOLID",1);
+            Task expected = new Task { Id = 1, Description = "training SOLID", Done = false };
+            Task actual = _projectService.GetTask(projects, 1);
+            Assert.AreEqual(expected.Id,actual.Id);
+            Assert.AreEqual(expected.Description,actual.Description);
+            Assert.AreEqual(expected.Done,actual.Done);
+            Assert.AreEqual(expected.Deadline,actual.Deadline);
+        }
+        [Test, Timeout(500)]
         public void GivenTaskIdAndDoneWhenSetDoneIsCalledThenSetDoneCorrectly()
         {
             List<Project> projects = new List<Project>{};

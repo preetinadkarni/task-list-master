@@ -26,24 +26,35 @@ namespace Tasks
                 projects.Add(_projectService.AddProject(subcommandRest[1]));
             } else if (subcommand == "task")
             {
-                string taskId;                
-                var projectTask = subcommandRest[1].Split(" ".ToCharArray(), 2);
-                var taskDescription = projectTask[1];
-                bool isTaskIdSpecified = taskDescription.Contains("@");
-
-                if (isTaskIdSpecified)
-                {
-                    taskDescription = projectTask[1].Split("@", 2)[0].Trim();
-                    taskId = projectTask[1].Split("@", 2)[1];
-                    if (HasAnySpecialCharactersOrSpace(taskId))
-                        throw new Exception("Task id cannot contain spaces and special characters");
-                }
-                else
-                    taskId = NextId().ToString();
-                _projectService.AddTask(projects,projectTask[0], taskDescription, taskId );
+                AddTask(subcommandRest[1]);
             }
         }
-        
+
+        private void AddTask(string subcommand)
+        {
+            var projectTask = subcommand.Split(" ".ToCharArray(), 2);
+            string[] task = GetTaskDescriptionAndId(projectTask[1]);
+
+            _projectService.AddTask(projects, projectTask[0], task[0], task[1]);
+        }
+
+        private string[] GetTaskDescriptionAndId(string taskcommand)
+        {
+            bool isTaskIdSpecified = taskcommand.Contains("@");
+            string[] task= new string[2];
+            task[0] = taskcommand.Split("@", 2)[0].Trim();
+            if (isTaskIdSpecified)
+            {
+                task[1] = taskcommand.Split("@", 2)[1];
+                if (HasAnySpecialCharactersOrSpace(task[1]))
+                    throw new Exception("Task id cannot contain spaces and special characters");
+            }
+            else
+                task[1] = NextId().ToString();
+            return task;
+
+        }
+
         private long NextId()
         {
             return ++lastId;

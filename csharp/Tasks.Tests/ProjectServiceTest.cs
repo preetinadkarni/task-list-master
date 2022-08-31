@@ -29,9 +29,9 @@ namespace Tasks
             List<Project> projects = new List<Project>{};
             projects.Add(_projectService.AddProject("secrets"));
             projects.Add(_projectService.AddProject("project training"));
-            _projectService.AddTask(projects, "project training","training SOLID",1);
-            Task expected = new Task { Id = 1, Description = "training SOLID", Done = false };
-            Task actual = _projectService.GetTask(projects, 1);
+            _projectService.AddTask(projects, "project training","training SOLID","1");
+            Task expected = new Task { Id = "1", Description = "training SOLID", Done = false };
+            Task actual = _projectService.GetTask(projects, "1");
             Assert.AreEqual(expected.Id,actual.Id);
             Assert.AreEqual(expected.Description,actual.Description);
             Assert.AreEqual(expected.Done,actual.Done);
@@ -44,9 +44,9 @@ namespace Tasks
             List<Project> projects = new List<Project>{};
             projects.Add(_projectService.AddProject("secrets"));
             projects.Add(_projectService.AddProject("project training"));
-            _projectService.AddTask(projects, "project training","training SOLID",1);
-            Task expected = new Task { Id = 1, Description = "training SOLID", Done = false };
-            Task actual = _projectService.GetTask(projects, 1);
+            _projectService.AddTask(projects, "project training","training SOLID","1");
+            Task expected = new Task { Id = "1", Description = "training SOLID", Done = false };
+            Task actual = _projectService.GetTask(projects, "1");
             Assert.AreEqual(expected.Id,actual.Id);
             Assert.AreEqual(expected.Description,actual.Description);
             Assert.AreEqual(expected.Done,actual.Done);
@@ -57,9 +57,9 @@ namespace Tasks
         {
             List<Project> projects = new List<Project>{};
             projects.Add(_projectService.AddProject("secrets"));
-            _projectService.AddTask(projects, "secrets","training SOLID",1);
+            _projectService.AddTask(projects, "secrets","training SOLID","1");
             _projectService.SetDone(projects,"1",true);
-            Assert.AreEqual(true,_projectService.GetTask(projects,1).Done);
+            Assert.AreEqual(true,_projectService.GetTask(projects,"1").Done);
         }
         
         [Test, Timeout(500)]
@@ -67,9 +67,9 @@ namespace Tasks
         {
             List<Project> projects = new List<Project>{};
             projects.Add(_projectService.AddProject("secrets"));
-            _projectService.AddTask(projects, "secrets","training SOLID",1);
+            _projectService.AddTask(projects, "secrets","training SOLID","1");
             _projectService.SetDeadline(projects,"1 10-22-2022");
-            string deadline = _projectService.GetTask(projects, 1).Deadline?.ToString("MM-dd-yyyy");
+            string deadline = _projectService.GetTask(projects, "1").Deadline?.ToString("MM-dd-yyyy");
             Assert.AreEqual("10-22-2022", deadline);
         }
 
@@ -78,9 +78,9 @@ namespace Tasks
         {
             List<Project> projects = new List<Project> { };
             projects.Add(_projectService.AddProject("secrets"));
-            _projectService.AddTask(projects, "secrets", "training SOLID", 1);
-            Task expected = new Task { Id = 1, Description = "training SOLID", Done = false };
-            Task actual = _projectService.GetTask(projects, 1);
+            _projectService.AddTask(projects, "secrets", "training SOLID", "1");
+            Task expected = new Task { Id = "1", Description = "training SOLID", Done = false };
+            Task actual = _projectService.GetTask(projects, "1");
             Assert.AreEqual(expected.Id,actual.Id);
             Assert.AreEqual(expected.Description,actual.Description);
             Assert.AreEqual(expected.Done,actual.Done);
@@ -92,8 +92,8 @@ namespace Tasks
         {
             List<Project> projects = new List<Project> { };
             projects.Add(_projectService.AddProject("secrets"));
-            _projectService.AddTask(projects, "secrets", "training SOLID", 1);
-            var ex =Assert.Throws<Exception>( ()=> _projectService.GetTask(projects, 2));
+            _projectService.AddTask(projects, "secrets", "training SOLID", "1");
+            var ex =Assert.Throws<Exception>( ()=> _projectService.GetTask(projects, "2"));
             Assert.AreEqual("Could not find a task with id \"2\".",ex.Message);
         }
     }

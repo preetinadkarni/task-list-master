@@ -1,3 +1,4 @@
+using System;
 using NUnit.Framework;
 
 namespace Tasks
@@ -32,19 +33,34 @@ namespace Tasks
             var tasks = taskList.projects[0].Tasks[0];
             
             Assert.AreEqual("SOLID", tasks.Description);
-            Assert.AreEqual( 1, tasks.Id);
+            Assert.AreEqual( "1", tasks.Id);
         }
         
         [Test, Timeout(500)]
-        public void GivenCommandLineHasTaskWithTaskIDWhenAddIsCalledThenAddsTask()
+        [TestCase("task secrets SOLID @ST1", "SOLID", "ST1")]
+        [TestCase("task secrets SOLID Training @123", "SOLID Training", "123")]
+        [TestCase("task secrets SOLID @ABC", "SOLID", "ABC")]
+        public void GivenCommandLineHasTaskWithTaskIDWhenAddIsCalledThenAddsTask(string taskCommandLine, string expectedDescription, string expectedTaskId)
         {
             taskList.Add("project secrets");
-            string commandLine = "task secrets SOLID ST1";
+            string commandLine = taskCommandLine;
             taskList.Add(commandLine);
             var tasks = taskList.projects[0].Tasks[0];
             
-            Assert.AreEqual("SOLID", tasks.Description);
-            Assert.AreEqual( "ST1", tasks.Id);
+            Assert.AreEqual(expectedDescription, tasks.Description);
+            Assert.AreEqual( expectedTaskId, tasks.Id);
+        }
+        
+        [Test, Timeout(500)]
+        [TestCase("task secrets SOLID @ST$$1")]
+        [TestCase("task secrets SOLID @ST  1")]
+        [TestCase("task secrets SOLID @ST^&*1")]
+        public void GivenCommandLineHasTaskWithSpecialCharsTaskIDWhenAddIsCalledThenThrowsException(string taskCommandLine)
+        {
+            taskList.Add("project secrets");
+            string commandLine = taskCommandLine;
+            var ex =Assert.Throws<Exception>( ()=> taskList.Add(commandLine));
+            Assert.AreEqual("Task id cannot contain spaces and special characters",ex.Message);
         }
     }
 }
